@@ -1,49 +1,45 @@
-import os
-from re import M
-import sys
+import java.awt.*;
 
-def main():
-    
-    if len(sys.argv) < 3: 
-        print("Error: Invalid SMC header")
-        return
+import javax.swing.*;
 
-    with open(sys.argv[1], "rb") as f:
-        data = f.read()
+public class LevelEditor extends JFrame {
 
-    # Check for valid SMC header
-    if data[0:4] != b"\xFE\x80\x00\x01":
-        print("Error: Invalid SMC header")
-        return
+   private static final long serialVersionUID = 1L;
 
-    # Get ROM size and calculate number of banks
-    rom_size = (data[4] << 8) | data[5]
-    num_banks = rom_size // 0x2000
+   
+   public LevelEditor() {
+       setTitle("Level Editor");
+       setSize(800, 600);
+       setLocationRelativeTo(null);
+       setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-    # Get title of ROM and create output directory based on it
-    title = ""
-    for i in range(0x10, 0x20):
-        if data[i] == 0: break
+       JPanel panel = new JPanel();
+       panel.setLayout(new BorderLayout());
 
-        title += chr(data[i])
+       
 
-    output_dir = os.path.join(sys.argv[2], title)
+       JTabbedPane tabbedPane = new JTabbedPane();
 
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    
+       
 
-    # Iterate through all banks and save them to file
-    for i in range(num_banks):
-        bank = data[0x2000 * i : 0x2000 * (i + 1)]
+       JComponent panel1 = makeTextPanel("Level 1");
+       tabbedPane.addTab("Level 1", panel1);
 
-        with open(os.path.join(output_dir, "{:04X}.bin".format(i)), "wb") as f:
-            f.write(bank)
+       
 
-            print("Wrote bank {:04X}".format(i))
+       JComponent panel2 = makeTextPanel("Level 2");
+       tabbedPane.addTab("Level 2", panel2);
 
-            sys.stdout.flush()
+       
 
-main()
-print(main())
+       JComponent panel3 = makeTextPanel("Level 3");
+       tabbedPane.addTab("Level 3", panel3);
 
+       
+
+       panel.add(tabbedPane, BorderLayout.CENTER);
+
+       
+
+       add(panel, BorderLayout.CENTER); 		// Adds Panel to frame so that it is visible								// frame visible    }    private static void createAndShowGUI() {         //Create and set up the window.         LevelEditor frame = new LevelEditor();         //Display the window.         frame.setVisible(true);     }    public static void main(String[] args) {         //Schedule a job for the event-dispatching thread:         //creating and showing this application's GUI.         javax.swing.SwingUtilities.invokeLater(new Runnable() {             public void run() {                 createAndShowGUI();             }         });     }
+}
